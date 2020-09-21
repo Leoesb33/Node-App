@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>B2 socket.io</title>
+    </head>
+    <body id="test">
+       <p> coucou c'est toujours moi <p>
+        <form v-on="submit: send">
+            <input v-model="message">
+            <button>Send</button>
+        </form>
+    
+        <ul id="list_messages">
+            <li v-repeat="message: list_messages">{{ message }}</li>
+        </ul>
+        
+    </body>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.15/vue.min.js"></script>
+
+    <!--après l'appel js cdn-->
+    <script>
+        var socket = io();
+        new Vue({
+            el: '#test',
+        
+
+            data: {
+                message: ''
+            },
+
+            methods: {
+                send: function(e) {
+                    socket.emit('message_send', this.message);
+
+                    this.message = '';
+
+                    e.preventDefault();
+                }
+            }
+        })      
+    </script>
+    <script>
+    var socket = io();
+    new Vue({
+        el: '#test',
+
+        data: {
+            message: '',
+            list_messages: [],
+        },
+
+        methods: {
+            ready: function() {
+                socket.on('message_broadcast', function(message) {
+                    this.list_messages.push(message);
+                }.bind(this));
+},
+
+        }
+    })
+    
+    </script>
+    
+</html>
+
+
